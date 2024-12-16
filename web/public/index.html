@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)https://tocas-ui.com/5.0/zh-tw/examples/dashboard.html#! -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="./資訊儀表板 - Tocas UI_files/tocas.min.css">
+        <link href="./資訊儀表板 - Tocas UI_files/css2" rel="stylesheet">
+        <title>移動式分隔島 - 首頁</title>
+        <!-- 核心：Tocas UI 套件head -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- 核心：Tocas UI 套件end -->
+    </head>
+    <body>
+        <div class="ts-app-layout is-fullscreen is-horizontal">
+            <div class="cell has-dark" style="width: 240px; color: var(--ts-white)">
+                <div class="ts-content is-center-aligned">
+                    <div class="ts-wrap is-vertical is-compact is-middle-aligned">
+                        <div class="ts-image is-circular">
+                            <img src="https://i.pinimg.com/originals/23/51/bc/2351bc65b2b5d75cef146b7edddf805b.gif" width="80">
+                        </div>
+                        <div class="ts-header">{Username}</div>
+                    </div>
+                </div>
+                <div class="ts-divider"></div>
+                <div class="ts-content is-dense">
+                    <div class="ts-grid">
+                        <div class="column is-fluid">
+                            <div class="ts-text is-bold">道路控制台</div>
+                        </div>
+                        <div class="column">
+                            <span class="ts-icon is-users-icon"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ts-menu is-dense is-small" style="opacity: 0.8">
+                    <a href="/main" class="item">系統狀態</a>
+                    <a href="/control" class="item">方向控制</a>
+                    <a href="/admin" class="item">使用者管理</a>
+                </div>
+                <div class="ts-divider has-top-spaced-small"></div>
+                <div class="ts-content is-dense">
+                    <div class="ts-grid">
+                        <div class="column is-fluid">
+                            <div class="ts-text is-bold">網站管理</div>
+                        </div>
+                        <div class="column">
+                            <span class="ts-icon is-cogs-icon"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ts-menu is-dense is-small" style="opacity: 0.8">
+                    <a href="/project" class="item">關於專題</a>
+                    <a href="/about" class="item">關於小隊</a>
+                </div>
+                <div class="ts-divider has-top-spaced-small"></div>
+                <div class="ts-divider"></div>
+                <a href="https://github.com/hongfu553/highway_websystem" class="ts-content is-interactive is-dense">
+                    <div class="ts-grid">
+                        <div class="column is-fluid">
+                            <div class="ts-text is-bold">Github</div>
+                        </div>
+                        <div class="column">
+                            <span class="ts-icon is-github-icon"></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="cell is-fluid is-scrollable is-secondary">
+                <div class="ts-container is-narrow has-vertically-padded-large">
+                    <div class="ts-header is-large is-heavy">儀表板</div>
+                    <div class="ts-text is-secondary">檢視系統狀態。</div>
+                    <div class="ts-grid is-relaxed is-3-columns has-top-spaced-large">
+                        <div class="column">
+                            <div class="ts-box">
+                                <div class="ts-content">
+                                    <div class="ts-statistic">
+                                        <div class="value">null</div>                                        
+                                    </div>
+                                    北上分隔島數
+                                </div>
+                                <div class="symbol">
+                                    <span class="ts-icon is-eye-icon"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="ts-box">
+                                <div class="ts-content">
+                                    <div class="ts-statistic">
+                                        <div class="value">null</div>                                
+                                    </div>
+                                    尚未移動分隔島數
+                                </div>
+                                <div class="symbol">
+                                    <span class="ts-icon is-users-icon"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="ts-box">
+                                <div class="ts-content">
+                                    <div class="ts-statistic">
+                                        <div class="value">null</div>                                        
+                                    </div>
+                                    南下分隔島數
+                                </div>
+                                <div class="symbol">
+                                    <span class="ts-icon is-clock-icon"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ts-divider is-section has-top-spaced-large"></div>
+                    <div class="ts-box" style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="map-container" style="width: 100%; overflow: hidden; border-radius: 8px;">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1938037.8510976478!2d120.29374776101614!3d23.721812774012847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1szh-TW!2stw!4v1732003090233!5m2!1szh-TW!2stw" 
+                            width="100%" 
+                            height="450" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                        <div class="ts-content">
+                            <div class="ts-header is-heavy">台灣高速公路地圖</div>
+                            <p>目前計劃希望可以在全福爾摩沙高送公路安裝此裝置，尤其是經常塞車路段</p>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    
+
+</body></html>
