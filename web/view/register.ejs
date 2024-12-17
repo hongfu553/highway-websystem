@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html class="is-dark">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>註冊介面</title>
+
+    <!-- 核心：UI head -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- 核心：UI end -->
+</head>
+<body>
+    <div class="ts-app-center">
+        <div class="content">
+            <div class="ts-box">
+                <div class="ts-content is-padded">
+                    <div class="ts-wrap is-vertical">
+                        <form action="/register" method="POST">
+                            <div class="ts-header is-large is-heavy is-icon">
+                                <div class="ts-icon is-face-smile-icon">
+                                </div>
+                                用戶註冊
+                            </div>
+                            <div class="ts-text is-label">使用者帳號</div>
+                            <div class="ts-input is-start-icon is-underlined">
+                                <span class="ts-icon is-user-icon"></span>
+                                <input type="text" id="username" name="username" required />
+                            </div>
+                            <div class="ts-text is-label">密碼</div>
+                            <div class="ts-input is-start-icon is-underlined">
+                                <span class="ts-icon is-lock-icon"></span>
+                                <input type="password" id="password" name="password" required />
+                            </div>
+                            <div class="ts-text is-label">確認密碼</div>
+                            <div class="ts-input is-start-icon is-underlined">
+                                <span class="ts-icon is-lock-icon"></span>
+                                <input type="password" id="confirm_password" name="confirm_password" required />
+                            </div>
+                            <button class="ts-button is-fluid" type="submit">註冊</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

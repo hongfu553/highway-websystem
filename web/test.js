@@ -1,77 +1,161 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
-
+const path = require('path');
+const session = require('express-session');
+const sqlite3 = require('sqlite3');
+const bcrypt = require('bcrypt'); // 修正拼寫錯誤
+const port = 3000;
 const app = express();
-const users = {}; // 模擬用戶數據庫
 
-const SECRET_KEY = 'your_secret_key';
+// Session 中間件設定
+app.use(
+    session({
+        secret: 'your_session_secret_key', // 替換為更安全的密鑰
+        resave: false,
+        saveUninitialized: true,
+        cookie: { maxAge: 60 * 60 * 1000 }, // 設定 session 的有效期為 1 小時
+    })
+);
+// 設定解析 POST 請求的 body
+app.use(express.urlencoded({ extended: true }));
 
-// 中間件
-app.use(bodyParser.json());
-app.use(cookieParser());
+const db = new sqlite3.Database('highway.db', (err) => {
+    if (err) {
+        console.error('Database error:', err);
+    } else {
+        console.log('Database is connected');
+    }
+});
 
-// 註冊路由
+// 驗證登入狀態中間件
+function authMiddleware(req, res, next) {
+    if (req.session.user) {
+        next();
+    } else {
+        res.status(401).send(`
+            <html lang="zh-TW">
+            <head>
+                <meta charset="UTF-8">
+                <title>未登入</title>
+                <script>
+                    alert('請先登入，將跳轉至登入頁面');
+                    window.location.href = '/';
+                </script>
+            </head>
+            <body>
+            </body>
+            </html>
+        `);
+    }
+}
+
+// 驗證登入
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    const query = `SELECT * FROM users WHERE username = ?`;
+    db.get(query, [username], (err, row) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).send('伺服器內部錯誤');
+        }
+        if (row) {
+            bcrypt.compare(password, row.password, (err, result) => {
+                if (err) {
+                    console.error('Password comparison error:', err);
+                    return res.status(500).send('伺服器內部錯誤');
+                }
+                if (result) {
+                    req.session.user = username;
+                    res.redirect('/main');
+                } else {
+                    res.send(`
+                        <html lang="zh-TW">
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>帳密錯誤</title>
+                            <script>
+                                alert('帳號密碼錯誤，請重新登入');
+                                window.location.href = '/';
+                            </script>
+                        </head>
+                        </html>
+                    `);
+                }
+            });
+        } else {
+            res.send(`
+                <html lang="zh-TW">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>帳密錯誤</title>
+                    <script>
+                        alert('帳號密碼錯誤，請重新登入');
+                        window.location.href = '/';
+                    </script>
+                </head>
+                </html>
+            `);
+        }
+    });
+});
+
+// 註冊路由 (模擬)
 app.post('/register', async (req, res) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).send('Email and password are required.');
-    }
-    if (users[email]) {
-        return res.status(400).send('User already exists.');
-    }
+    const hashedPassword = await bcrypt.hash(password, 10); // 在註冊時進行哈希處理
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    users[email] = { email, password: hashedPassword };
-
-    res.status(201).send('User registered successfully.');
+    const query = `INSERT INTO users (username, password) VALUES (?, ?)`;
+    db.run(query, [username, hashedPassword], (err) => {
+        if (err) {
+            console.error('Database insert error:', err);
+            return res.status(500).send('伺服器內部錯誤');
+        }
+        res.send('註冊成功！<a href="/">立即登入</a>');
+    });
 });
 
-// 登入路由
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    const user = users[email];
-    if (!user) {
-        return res.status(400).send('Invalid email or password.');
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-        return res.status(400).send('Invalid email or password.');
-    }
-
-    const token = jwt.sign({ email }, SECRET_KEY, { expiresIn: '1h' });
-    res.cookie('token', token, { httpOnly: true });
-    res.send('Login successful.');
+// 登出
+app.get('/logout', (req, res) => {
+    // 銷毀 session
+    req.session.destroy((err) => {
+        if (err) {
+            return res.send('登出時發生錯誤');
+        }
+        res.redirect('/');
+    });
 });
 
-// 驗證登入狀態路由
-app.get('/profile', (req, res) => {
-    const token = req.cookies.token;
-    if (!token) {
-        return res.status(401).send('Not authenticated.');
-    }
 
-    try {
-        const user = jwt.verify(token, SECRET_KEY);
-        res.json({ email: user.email });
-    } catch (err) {
-        res.status(401).send('Invalid token.');
-    }
+// 登入頁面路由
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// 登出路由
-app.post('/logout', (req, res) => {
-    res.clearCookie('token');
-    res.send('Logout successful.');
+app.get('/reg', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'register.html'));
 });
 
-// 啟動伺服器
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+app.get('/main', authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/about', authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'about.html'));
+});
+
+app.get('/control', authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'control.html'));
+});
+
+app.get('/project', authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'project.html'));
+});
+
+app.get('/admin', authMiddleware, (req, res) => {
+    res.send('頁面製作中...');
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });
