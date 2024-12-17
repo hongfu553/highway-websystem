@@ -1,26 +1,37 @@
 const express = require('express');
 const path = require('path');
-const jwt = require('jsonwebtoken');
-
+const session = require('express-session');
+const sqlite3 = require('sqlite3');
+const bcrypt = require('bcrypt'); // 修正拼寫錯誤
 const port = 3000;
 const app = express();
-const secretKey = 'your_jwt_secret_key'; // 替換為更安全的密鑰
 
-// 模擬用戶資料
-const users = [
-    { id: 1, username: 'hongfu553', password: 'F132369445' },
-    { id: 2, username: 'user2', password: 'password2' },
-];
-
+// Session 中間件設定
+app.use(
+    session({
+        secret: 'your_session_secret_key', // 替換為更安全的密鑰
+        resave: false,
+        saveUninitialized: true,
+        cookie: { maxAge: 60 * 60 * 1000 }, // 設定 session 的有效期為 1 小時
+    })
+);
 // 設定解析 POST 請求的 body
 app.use(express.urlencoded({ extended: true }));
 
+const db = new sqlite3.Database('highway.db', (err) => {
+    if (err) {
+        console.error('Database error:', err);
+    } else {
+        console.log('Database is connected');
+    }
+});
+
 // 驗證登入狀態中間件
 function authMiddleware(req, res, next) {
-    const token = req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).send(`
+    if (req.session.user) {
+        next();
+    } else {
+        res.status(401).send(`
             <html lang="zh-TW">
             <head>
                 <meta charset="UTF-8">
@@ -35,95 +46,109 @@ function authMiddleware(req, res, next) {
             </html>
         `);
     }
-
-    jwt.verify(token, secretKey, (err, decoded) => {
-        if (err) {
-            return res.status(403).send('無效的 Token');
-        }
-        req.user = decoded;
-        next();
-    });
 }
-
-// 登入頁面路由
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
 
 // 驗證登入
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    const user = users.find(
-        (u) => u.username === username && u.password === password
-    );
+    const query = `SELECT * FROM users WHERE username = ?`;
+    db.get(query, [username], (err, row) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).send('伺服器內部錯誤');
+        }
+        if (row) {
+            bcrypt.compare(password, row.password, (err, result) => {
+                if (err) {
+                    console.error('Password comparison error:', err);
+                    return res.status(500).send('伺服器內部錯誤');
+                }
+                if (result) {
+                    req.session.user = username;
+                    res.redirect('/main');
+                } else {
+                    res.send(`
+                        <html lang="zh-TW">
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>帳密錯誤</title>
+                            <script>
+                                alert('帳號密碼錯誤，請重新登入');
+                                window.location.href = '/';
+                            </script>
+                        </head>
+                        </html>
+                    `);
+                }
+            });
+        }
+    });
+});
 
-    if (user) {
-        const token = jwt.sign({ id: user.id, username: user.username }, secretKey, {
-            expiresIn: '1h',
-        });
+// 註冊路由
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10); // 在註冊時進行哈希處理
+    const query = `INSERT INTO users (username, password) VALUES (?, ?)`;
+    db.run(query, [username, hashedPassword], (err) => {
+        if (err) {
+            console.error('Database insert error:', err);
+            return res.status(500).send('伺服器內部錯誤');
+        }
         res.send(`
             <html lang="zh-TW">
             <head>
                 <meta charset="UTF-8">
-                <title>登入成功</title>
+                <title>註冊成功</title>
                 <script>
-                    alert('登入成功');
-                    window.location.href = '/main';
-                </script>
-            </head>
-            <body>
-            </body>
-            </html>
-        `);
-    } else {
-        res.send(`
-            <html lang="zh-TW">
-            <head>
-                <meta charset="UTF-8">
-                <title>帳密錯誤</title>
-                <script>
-                    alert('帳號密碼錯誤，請重新登入');
+                    alert('帳號註冊成功，立即登入');
                     window.location.href = '/';
                 </script>
             </head>
             </html>
         `);
-    }
+    });
 });
 
-// 註冊路由 (模擬)
-app.post('/register', (req, res) => {
-    const { username, password } = req.body;
-
-    if (users.find((u) => u.username === username)) {
-        res.status(400).send('用戶名已存在');
-    } else {
-        users.push({ id: users.length + 1, username, password });
-        res.send('註冊成功！<a href="/">立即登入</a>');
-    }
-});
-
-// 登出 (模擬)
+// 登出
 app.get('/logout', (req, res) => {
-    res.redirect('/');
+    // 銷毀 session
+    req.session.destroy((err) => {
+        if (err) {
+            return res.send('登出時發生錯誤');
+        }
+        res.redirect('/');
+    });
 });
 
-// 受保護的路由
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+
+// 登入頁面路由
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'view', 'login.html'));
+});
+
+app.get('/reg', (req, res) => {
+    res.sendFile('view', 'register.ejs');
+});
+
 app.get('/main', authMiddleware, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.render('index', { user: req.session.user });
 });
 
 app.get('/about', authMiddleware, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'about.html'));
+    res.sendFile(path.join(__dirname, 'view', 'about.html'));
 });
 
 app.get('/control', authMiddleware, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'control.html'));
+    res.sendFile(path.join(__dirname, 'view', 'control.html'));
 });
 
 app.get('/project', authMiddleware, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'project.html'));
+    res.sendFile(path.join(__dirname, 'view', 'project.html'));
 });
 
 app.get('/admin', authMiddleware, (req, res) => {
