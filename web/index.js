@@ -3,6 +3,7 @@ const path = require('path');
 const session = require('express-session');
 const sqlite3 = require('sqlite3');
 const bcrypt = require('bcrypt'); // 修正拼寫錯誤
+const WebSocketServer = require('./websocket'); // 引入 websocket.js
 const port = 3000;
 const app = express();
 
@@ -122,17 +123,40 @@ app.get('/logout', (req, res) => {
     });
 });
 
+// 啟動 WebSocket 伺服器
+const wsServer = new WebSocketServer(8080);
+wsServer.start().then(() => {
+    console.log('WebSocket server started successfully.');
+}).catch((error) => {
+    console.error('Failed to start WebSocket server:', error);
+});
+
+app.post('/control/api', authMiddleware, (req, res) => {
+    const { direction } = req.body;
+
+    if (!direction) {
+        return res.status(400).json({ message: '未提供方向資料' });
+    }
+
+    console.log(`接收到方向指令：${direction}`);
+
+    // 模擬執行與 ESP32 的溝通，並返回成功訊息
+    const responseMessage = `方向 "${direction}" 指令已成功執行！`;
+    
+    // 傳回 JSON 回應
+    res.json({ message: responseMessage });
+});
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-
 // 登入頁面路由
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'view', 'login.html'));
+    res.render('login');
 });
 
 app.get('/reg', (req, res) => {
-    res.sendFile('view', 'register.ejs');
+    res.render('register');
 });
 
 app.get('/main', authMiddleware, (req, res) => {
@@ -140,15 +164,15 @@ app.get('/main', authMiddleware, (req, res) => {
 });
 
 app.get('/about', authMiddleware, (req, res) => {
-    res.sendFile(path.join(__dirname, 'view', 'about.html'));
+    res.render('about', { user: req.session.user });
 });
 
 app.get('/control', authMiddleware, (req, res) => {
-    res.sendFile(path.join(__dirname, 'view', 'control.html'));
+    res.render('control', { user: req.session.user },);
 });
 
 app.get('/project', authMiddleware, (req, res) => {
-    res.sendFile(path.join(__dirname, 'view', 'project.html'));
+    res.render('project', { user: req.session.user });
 });
 
 app.get('/admin', authMiddleware, (req, res) => {
