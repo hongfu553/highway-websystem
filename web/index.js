@@ -3,14 +3,14 @@ const path = require('path');
 const session = require('express-session');
 const sqlite3 = require('sqlite3');
 const bcrypt = require('bcrypt'); // 修正拼寫錯誤
-const WebSocketServer = require('./websocket'); // 引入 websocket.js
+const WebSocketServer = require('./websocket');
 const port = 3000;
 const app = express();
 
 // Session 中間件設定
 app.use(
     session({
-        secret: 'your_session_secret_key', // 替換為更安全的密鑰
+        secret: 'fuckyournigger', // 替換為更安全的密鑰
         resave: false,
         saveUninitialized: true,
         cookie: { maxAge: 60 * 60 * 1000 }, // 設定 session 的有效期為 1 小時
