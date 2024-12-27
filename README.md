@@ -4,7 +4,7 @@
 
 ## 介紹
 
-**highway-websystem** 是一個基於 Flask 的網頁應用程式，作為一個 MQTT 控制面板。它提供了一個友善的介面，讓使用者可以發佈訊息到指定的 MQTT 主題，並記錄所有發佈的訊息。此應用程式旨在提供一個簡單易用的工具，以方便地控制和監控 MQTT 系統。
+**highway-websystem** 是一個基於 Nodejs Express 的網頁應用程式，使用Websocket跟esp32進行溝通，可以將此伺服器架設在任何地方例如：EC2、GCP、Linux...等，並記錄下所有資料，並且結合高速公路1968 API，與路況進行判斷
 
 ## 功能
 
@@ -16,18 +16,18 @@
 
 ## 技術
 
-* **後端:** Flask
-* **資料庫:** sqlite
-* **MQTT 庫:** Paho-MQTT
-* **驗證:** Flask-Login 和 Flask-Bcrypt
+* **後端:** Express
+* **資料庫:** sqlite3
+* **Websocket:** Express-ws
+
 
 ## 安裝和使用
 
 **1. 安裝**
 
-* 建立虛擬環境（建議）：`python3 -m venv env`
-* 啟動虛擬環境：`source env/bin/activate`
-* 安裝依賴：`pip install -r requirements.txt`
+* 讀取網頁目錄：`cd web`
+* 安裝依賴：`npm install`
+* 啟動Dev server：`node index.js`
 
 **2. 設定**
 
