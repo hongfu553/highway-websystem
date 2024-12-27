@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>升降式道路分隔島 - 專題報告</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .ts-table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ts-app-layout is-fullscreen">
+        <div class="cell">
+            <div class="ts-container has-top-spaced">
+
+                <!-- 頁面標題 -->
+                <header class="ts-header">
+                    <h1 class="ts-header is-huge is-bold">升降式道路分隔島 - 專題報告</h1>
+                </header>
+
+                <!-- 摘要區 -->
+                <section class="ts-card has-top-spaced">
+                    <div class="content">
+                        <h2 class="ts-header">壹、摘要</h2>
+                        <p>自古以來國道塞車都是一個大問題，不管事國定假日還是普通假日這些都是常態，為了解決此問題，我們需要有個方法可以去改善這狀況，因此我們發現了調撥車道的這個方法，透過調撥車道，可以把容易塞車段道路多出一道可行駛道路，因此增加汽車流動率來減少塞車機率。以往的調撥車道大多都在平面道路，因為目前的調撥車道都是透過人工完成，但高速公路的平均車速普遍都偏快，若還是要透過人工方式改變車道勢必會有安全性問題，因此我們設計出了此產品。</p>
+                    </div>
+                </section>
+
+                <!-- 研究動機與目的 -->
+                <section class="ts-card has-top-spaced">
+                    <div class="content">
+                        <h2 class="ts-header">貳、研究動機與目的</h2>
+                        <p>由於台灣地小人多，導致上下班時間與假日會有塞車的問題，很常聽到諸多同學抱怨此問題，孩子都在抱怨了長輩們肯定也會有不少怨氣，且此問題在連假時會更嚴重、更危險。連假時，大家都會想回老家看看或是出去玩，此問題使駕車時間不斷拉長，會堆積駕駛的疲勞值，使其有睏意、注意力不集中等問題。</p>
+                        <p>因此，我們希望運用這次機會改變這個現象。我們將分隔島埋入公路與其合二為一，以軟體觀察車流，並使用公路原有的螢幕顯示調撥訊息，遠程操控分隔島將其伸出，達到調撥車道的效果。</p>
+                    </div>
+                </section>
+
+                <!-- 研究設備及器材 -->
+                <section class="ts-card has-top-spaced">
+                    <div class="content">
+                        <h2 class="ts-header">參、研究設備及器材</h2>
+                        <table class="ts-table is-bordered is-striped">
+                            <thead>
+                                <tr>
+                                    <th>名稱</th>
+                                    <th>規格</th>
+                                    <th>數量</th>
+                                    <th>備註</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>ESP32</td><td>-</td><td>1</td><td>使用晶片</td></tr>
+                                <tr><td>伺服馬達</td><td>DS3115</td><td>15</td><td>使分隔島伸縮</td></tr>
+                                <tr><td>銲槍</td><td>-</td><td>1</td><td>-</td></tr>
+                                <tr><td>尖嘴鉗</td><td>-</td><td>1</td><td>-</td></tr>
+                                <tr><td>智慧裝置</td><td>Laptop</td><td>1</td><td>使用網頁</td></tr>
+                                <tr><td>電路板</td><td>10x20</td><td>1</td><td>-</td></tr>
+                                <tr><td>木板</td><td>40x50、20x50、40x20</td><td>2片、2片、2片</td><td>成品外殼</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 研究過程或方法 -->
+                <section class="ts-card has-top-spaced">
+                    <div class="content">
+                        <h2 class="ts-header">肆、研究過程或方法</h2>
+                        <p>此專題須將硬體與軟體結合才能完成，運用軟體調用當前高速公路車況，並決定是否需要調撥車道，再將分隔島伸起，達到調撥車道的效果。</p>
+                        <div class="ts-image is-rounded">
+                            <img src="images/island-original.jpg" width="350">
+                            <p>圖一:原始分隔島</p>                            
+                            <img src="images/island-second.png" width="350">
+                            <p>圖二:改良後的分隔島</p>
+                            <img src="images/island-third.png" width="350">
+                            <p>圖三:分隔島頗面圖</p>
+                            <img src="images/software-pic.jpg" width="350">
+                            <p>圖四:硬體方塊圖</p>
+                            <img src="images/web-pic.png" width="350">
+                            <p>圖五:網頁程式碼</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 討論與結論 -->
+                <section class="ts-card has-top-spaced">
+                    <div class="content">
+                        <h2 class="ts-header">陸、討論</h2>
+                        <p>一開始我們是打算使用可以自行移動的分隔島，但經過討論後發現，此方法只會增加麻煩並不會幫助調撥。考量到此因素，我們才更改使用方式，以伸縮作為主要模式，減少危險發生並幫助社會。</p>
+
+                        <h2 class="ts-header">柒、結論</h2>
+                        <ul>
+                            <li>增加車道使用頻率，達到減少車流壓力造成的危害。</li>
+                            <li>減少行車時間，降低駕駛疲勞。</li>
+                            <li>智慧化調撥車道，減少行政人力支出，加快調撥速度，降低危險。</li>
+                            <li>提高道路使用率，降低塞車時間，提高汽車燃油效率，減少污染。</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 參考資料 -->
+                <section class="ts-card has-top-spaced">
+                    <div class="content">
+                        <h2 class="ts-header">捌、參考資料</h2>
+                        <ul>
+                            <li><a href="https://www.nationalacademies.org/trb/transportation-research-board">Transportation Research Board</a></li>
+                            <li><a href="https://scholar.google.com">Google 學術</a></li>
+                            <li><a href="https://www.researchgate.net">ResearchGate</a></li>
+                            <li><a href="https://ieeexplore.ieee.org/Xplore/home.jsp">IEEE Xplore</a></li>
+                            <li><a href="https://www.sciencedirect.com">ScienceDirect</a></li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 聯絡方式 -->
+                <footer class="ts-content is-dense has-top-spaced">
+                    <p class="ts-text">
+                        若對於本專題有任何問題，請聯絡：<a href="mailto:hongfu553@gmail.com" class="ts-primary link">hongfu553@gmail.com</a>
+                    </p>
+                    <p class="ts-text">
+                        開發日誌：<a href="https://hackmd.io/@O_KZXh_uSL2LuNrAlpnL7g/BkhMFbFOA" class="ts-primary link">https://hackmd.io/@O_KZXh_uSL2LuNrAlpnL7g/BkhMFbFOA</a>
+                    </p> 
+                </footer>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
