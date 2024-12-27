@@ -3,9 +3,12 @@ const path = require('path');
 const session = require('express-session');
 const sqlite3 = require('sqlite3');
 const bcrypt = require('bcrypt'); // 修正拼寫錯誤
-const WebSocketServer = require('./websocket');
+const expressWs = require('express-ws');
+
 const port = 3000;
 const app = express();
+expressWs(app);
+
 
 // Session 中間件設定
 app.use(
@@ -112,9 +115,8 @@ app.post('/register', async (req, res) => {
     });
 });
 
-// 登出
+// logout
 app.get('/logout', (req, res) => {
-    // 銷毀 session
     req.session.destroy((err) => {
         if (err) {
             return res.send('登出時發生錯誤');
@@ -122,35 +124,21 @@ app.get('/logout', (req, res) => {
         res.redirect('/');
     });
 });
+//websocket server
+app.ws('/roud-control', (ws, req) => {
+    ws.on('message', (msg) => {
+        console.log(msg);
+        ws.send(msg);
+    });
+}
+//websocket server end
 
-// 啟動 WebSocket 伺服器
-const wsServer = new WebSocketServer(8080);
-wsServer.start().then(() => {
-    console.log('WebSocket server started successfully.');
-}).catch((error) => {
-    console.error('Failed to start WebSocket server:', error);
-});
 
-app.post('/control/api', authMiddleware, (req, res) => {
-    const { direction } = req.body;
-
-    if (!direction) {
-        return res.status(400).json({ message: '未提供方向資料' });
-    }
-
-    console.log(`接收到方向指令：${direction}`);
-
-    // 模擬執行與 ESP32 的溝通，並返回成功訊息
-    const responseMessage = `方向 "${direction}" 指令已成功執行！`;
-    
-    // 傳回 JSON 回應
-    res.json({ message: responseMessage });
-});
-
+//view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// 登入頁面路由
+// routes
 app.get('/', (req, res) => {
     res.render('login');
 });
