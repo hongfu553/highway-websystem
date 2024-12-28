@@ -88,6 +88,63 @@
             </button>
         </div>
     </div>
-    <script scr="./views/js/control.js"></script>
+    <script>
+        // 取得所有方向按鈕
+        const directionButtons = document.querySelectorAll('.button-group button');
+    
+        // 用於存儲選擇的方向
+        let selectedDirection = '';
+    
+        // 為每個方向按鈕添加點擊事件
+        directionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // 取得按鈕的 data-direction 屬性值
+                selectedDirection = button.getAttribute('data-direction');
+    
+                // 高亮顯示選擇的按鈕，移除其他按鈕的高亮
+                directionButtons.forEach(btn => btn.classList.remove('is-active'));
+                button.classList.add('is-active');
+    
+                console.log(`已選擇方向: ${selectedDirection}`);
+            });
+        });
+    
+        // 送出按鈕的點擊事件
+        const submitButton = document.getElementById('submitButton');
+        submitButton.addEventListener('click', () => {
+            if (selectedDirection) {
+                alert(`您選擇了方向：${selectedDirection}`);
+            } else {
+                alert('請先選擇方向！');
+            }
+        });
+
+        const ws = new WebSocket('ws://your-websocket-url');
+
+        ws.onopen = () => {
+            console.log('WebSocket connection established');
+        };
+
+        ws.onmessage = (event) => {
+            console.log('Message from server:', event.data);
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        submitButton.addEventListener('click', () => {
+            if (selectedDirection) {
+                ws.send(JSON.stringify({ direction: selectedDirection }));
+                alert(`您選擇了方向：${selectedDirection}`);
+            } else {
+                alert('請先選擇方向！');
+            }
+        });
+    </script>    
 </body>
 </html>
