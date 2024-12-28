@@ -4,7 +4,7 @@
   "description": "樟樹國際實中 星耀光輝隊project",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "start": "node index.js"
   },
   "author": "",
   "license": "MIT",

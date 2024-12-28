@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const sqlite3 = require('sqlite3');
-const bcrypt = require('bcrypt'); // 修正拼寫錯誤
+const bcrypt = require('bcrypt');
 const expressWs = require('express-ws');
 
 const port = 3000;
@@ -130,12 +130,13 @@ app.ws('/roud-control', (ws, req) => {
         console.log(msg);
         ws.send(msg);
     });
-}
+});
 //websocket server end
 
 
 //view engine
 app.set('view engine', 'ejs');
+
 app.set('views', path.join(__dirname, 'views'));
 
 // routes
