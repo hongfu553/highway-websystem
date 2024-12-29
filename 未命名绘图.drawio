@@ -30,7 +30,7 @@
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="10" value="資料正確" style="curved=1;startArrow=none;endArrow=block;exitX=0.93;exitY=0;entryX=0;entryY=0.5;" parent="1" source="3" target="4" edge="1">
+        <mxCell id="10" value="資料正確" style="curved=1;startArrow=none;endArrow=block;exitX=0.93;exitY=0;entryX=0;entryY=0.5;fontSize=12;" parent="1" source="3" target="4" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="571" y="299" />
