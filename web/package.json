@@ -4,17 +4,18 @@
   "description": "樟樹國際實中 星耀光輝隊project",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
-  },
+  "start": "node web/index.js"
+}
+,
   "author": "",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
-    "express-ws": "^5.0.2",
+    "mqtt": "^5.10.3",
     "sqlite3": "^5.1.7"
   }
 }
