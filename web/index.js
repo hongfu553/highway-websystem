@@ -6,8 +6,15 @@ const bcrypt = require('bcrypt');
 const mqtt = require('mqtt');
 
 // MQTT 設定
-const mqttBrokerUrl = 'mqtt://192.168.31.21';
-const mqttClient = mqtt.connect(mqttBrokerUrl);
+const options = {
+    host: 'pc756323.ala.asia-southeast1.emqxsl.com',
+    port: 8883, // TLS 使用的默認端口
+    protocol: 'mqtts', // 使用加密的 MQTT 協議
+    username: 'hongfu553', // 替換為你的 HiveMQ Cloud 帳戶使用者名稱
+    password: 'F132369445', // 替換為你的 HiveMQ Cloud 帳戶密碼
+  };
+
+const mqttClient = mqtt.connect(options);
 mqttClient.on('connect', () => console.log('Connected to MQTT broker'));
 mqttClient.on('error', (err) => console.error('MQTT connection error:', err));
 
