@@ -1,6 +1,7 @@
 #include "WiFiS3.h"          // ESP32-S3 WiFi 庫
 #include "WiFiSSLClient.h"   // SSL 客戶端庫
 #include <PubSubClient.h>    // MQTT 客戶端庫
+#include <Servo.h> 
 
 // WiFi 設定
 const char* ssid = "JICTS-FGAP";             // 輸入你的 WiFi 名稱
@@ -13,6 +14,8 @@ const char* mqtt_user = "hongfu553";  // 如果不需要證證，留空
 const char* mqtt_password = "F132369445"; 
 const char* mqtt_topic = "test/topic"; // 自訂的 MQTT 主題
 
+
+Servo myservo11,myservo12,myservo13,myservo14;  // 建立SERVO物件
 // WiFi 和 MQTT 客戶端
 WiFiSSLClient sslClient; // SSL 客戶端
 PubSubClient mqttClient(sslClient);
@@ -67,10 +70,58 @@ void setup() {
 
   // 連接 WiFi
   setupWiFi();
-
+  myservo11.attach(2);
+  myservo12.attach(3);
+  myservo13.attach(4);
+  myservo14.attach(5);
   // 設置 MQTT 伺服器和回呼函數
   mqttClient.setServer(mqtt_server, mqtt_port);
   mqttClient.setCallback(messageReceived);
+}
+
+void messageReceived(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("]: ");
+  
+  // 將 payload 轉換為字串
+  String message;
+  for (unsigned int i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+  Serial.println(message);
+
+  // 根據 topic 和 message 執行特定動作
+  if (String(topic) == "tofu/road") {
+    if (message == "north") {
+      Serial.println("Run command")
+      myservo11.write(90);
+      myservo12.write(90);
+      myservo13.write(90); // 開啟內建 LED
+    } else if (message == "middle") {
+      Serial.println("Run middle command")
+      myservo12.write(90);
+      myservo12.write(90);
+      myservo12.write(90); // 關閉內建 LED
+    } else if (message == "south") {
+      Serial.println("Run south command")
+      myservo13.write(90);
+      myservo12.write(90);
+      myservo12.write(90);
+    } else if (message == "warning-north"){
+      Serial.println("Run warning-north command")
+      myservo14.write(90);
+      myservo12.write(90);
+      myservo12.write(90);
+    } else if (message == "warning-south"){
+      Serial.println("Run warning-south command")
+      myservo12.write(90);
+      myservo12.write(90);
+      myservo12.write(90);
+    }
+  } else {
+    Serial.println("Unknown command");
+  }
 }
 
 // 主輪圈
@@ -81,3 +132,5 @@ void loop() {
   }
   mqttClient.loop();
 }
+
+

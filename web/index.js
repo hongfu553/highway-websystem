@@ -4,6 +4,8 @@ const session = require('express-session');
 const sqlite3 = require('sqlite3');
 const bcrypt = require('bcrypt');
 const mqtt = require('mqtt');
+const axios = require('axios');
+const qs = require('qs'); // 用來處理 URL 編碼的請求體
 
 // MQTT 設定
 const options = {
@@ -12,7 +14,7 @@ const options = {
     protocol: 'mqtts', // 使用加密的 MQTT 協議
     username: 'hongfu553', // 替換為你的 HiveMQ Cloud 帳戶使用者名稱
     password: 'F132369445', // 替換為你的 HiveMQ Cloud 帳戶密碼
-  };
+};
 
 const mqttClient = mqtt.connect(options);
 mqttClient.on('connect', () => console.log('Connected to MQTT broker'));
@@ -25,7 +27,7 @@ const port = 3000;
 // Session 中間件設定
 app.use(
     session({
-        secret: 'secure_random_secret', // 替換為更安全的密鑰
+        secret: 'fuckyourmother', // 替換為更安全的密鑰
         resave: false,
         saveUninitialized: false,
         cookie: { maxAge: 60 * 60 * 1000 }, // 1 小時
@@ -63,6 +65,30 @@ function authMiddleware(req, res, next) {
         <body></body>
         </html>
     `);
+}
+
+// OIDC 身份驗證資訊
+const clientId = 'jack306-03f62b49-6317-490c';
+const clientSecret = '91529fc7-3196-4199-8ef5-d6419df76c47';
+const tokenUrl = 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token';
+
+// 獲取 access token 的函式
+async function getAccessToken() {
+    const data = qs.stringify({
+        'grant_type': 'client_credentials',
+        'client_id': clientId,
+        'client_secret': clientSecret,
+    });
+
+    try {
+        const response = await axios.post(tokenUrl, data, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        });
+        return response.data.access_token;
+    } catch (error) {
+        console.error('Error fetching access token:', error);
+        throw error;
+    }
 }
 
 // 登入路由
@@ -118,62 +144,37 @@ app.post('/login', (req, res) => {
     });
 });
 
-// 註冊路由
-app.post('/register', async (req, res) => {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+// 即時交通資訊路由
+app.get('/traffic', authMiddleware, async (req, res) => {
+    const freewayName = req.query.freeway || '';
+    const sectionID = req.query.sectionID || '';
 
-    const query = `INSERT INTO users (username, password) VALUES (?, ?)`;
-    db.run(query, [username, hashedPassword], (err) => {
-        if (err) {
-            console.error('Database insert error:', err);
-            return res.status(500).send('伺服器內部錯誤');
-        }
-        res.send(`
-            <html lang="zh-TW">
-            <head>
-                <meta charset="UTF-8">
-                <title>註冊成功</title>
-                <script>
-                    alert('帳號註冊成功，立即登入');
-                    window.location.href = '/';
-                </script>
-            </head>
-            </html>
-        `);
-    });
-});
+    try {
+        // 先獲取 access token
+        const accessToken = await getAccessToken();
 
-// 登出路由
-app.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            return res.send('登出時發生錯誤');
-        }
-        res.redirect('/');
-    });
-});
+        // 使用獲得的 access token 調用 TDX API
+        const response = await axios.get(
+            `https://traffic.transportdata.tw/MOTC/v2/Road/Traffic/Live/Freeway/${sectionID}?$top=30&$format=JSON`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`, // 用 Bearer token 進行授權
+                },
+            }
+        );
 
-// MQTT 控制路由
-app.post('/send-mqtt', authMiddleware, (req, res) => {
-    const { direction } = req.body;
+        const trafficData = response.data.LiveTraffics[0];
+        const travelSpeed = trafficData?.TravelSpeed || '無法獲取';
+        const travelTime = trafficData?.TravelTime || '無法獲取';
 
-    if (!direction) {
-        return res.status(400).json({ success: false, error: '未提供方向' });
+        res.json({ travelSpeed, travelTime });
+    } catch (error) {
+        console.error('交通資訊請求錯誤:', error);
+        res.json({ travelSpeed: '查詢失敗', travelTime: '查詢失敗' });
     }
-
-    const topic = 'tofu/roud';
-    mqttClient.publish(topic, direction, (err) => {
-        if (err) {
-            console.error('MQTT publish error:', err);
-            return res.status(500).json({ success: false, error: '無法發佈訊息到 MQTT 主題' });
-        }
-        console.log(`send Message to: ${topic}: ${direction}`);
-        res.json({ success: true });
-    });
 });
 
-// 視圖引擎設定
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 

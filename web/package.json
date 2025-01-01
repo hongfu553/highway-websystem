@@ -4,12 +4,12 @@
   "description": "樟樹國際實中 星耀光輝隊project",
   "main": "index.js",
   "scripts": {
-  "start": "node index.js"
-}
-,
+    "start": "node index.js"
+  },
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",

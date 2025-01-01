@@ -117,24 +117,71 @@
                     </div>
                     <div class="ts-divider is-section has-top-spaced-large"></div>
                     <div class="ts-box" style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="ts-header is-heavy">即時交通路況
+                            <div class="ts-text is-secondary"></div>
+                        </div>
+                        <!-- 地圖顯示 -->
                         <div class="map-container" style="width: 100%; overflow: hidden; border-radius: 8px;">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1938037.8510976478!2d120.29374776101614!3d23.721812774012847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1szh-TW!2stw!4v1732003090233!5m2!1szh-TW!2stw" 
-                            width="100%" 
-                            height="450" 
-                            style="border:0;" 
-                            allowfullscreen="" 
-                            loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade">
+                            <iframe id="traffic-map" 
+                                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1938037.8510976478!2d120.29374776101614!3d23.721812774012847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1szh-TW!2stw!4v1732003090233!5m2!1szh-TW!2stw" 
+                                width="100%" 
+                                height="450" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade">
                             </iframe>
                         </div>
-                        <div class="ts-content">
-                            <div class="ts-header is-heavy">台灣高速公路地圖</div>
-                            <p>目前計劃希望可以在全福爾摩沙高送公路安裝此裝置，尤其是經常塞車路段</p>
+                    
+                        <!-- 選擇高速公路和路段 -->
+                        <div class="ts-form has-top-spaced-large">
+                            <div class="ts-field">
+                                <label for="highway-select">選擇高速公路</label>
+                                <select id="highway-select" class="ts-select">
+                                    <option value="1">國道一號</option>
+                                    <option value="3">國道三號</option>
+                                    <option value="5">國道五號</option>
+                                </select>
+                            </div>
+                            <div class="ts-field">
+                                <label for="section-select">選擇路段</label>
+                                <select id="section-select" class="ts-select">
+                                    <option value="101">台北 -> 桃園</option>
+                                    <option value="102">桃園 -> 新竹</option>
+                                    <option value="103">新竹 -> 苗栗</option>
+                                </select>
+                            </div>
+                            <button class="ts-button is-primary" onclick="fetchTrafficData()">查詢交通資訊</button>
                         </div>
-                    </div>                    
+                    
+                        <!-- 顯示交通資訊 -->
+                        <div id="traffic-info" class="ts-content has-top-spaced-large">
+                            <div class="ts-header is-heavy">交通資訊</div>
+                            <p>平均旅行速度: <span id="travel-speed">N/A</span> km/h</p>
+                            <p>預估旅行時間: <span id="travel-time">N/A</span> 分鐘</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    
+        <script>
+            async function fetchTrafficData() {
+                const highway = document.getElementById('highway-select').value;
+                const section = document.getElementById('section-select').value;
+        
+                try {
+                    // 發送請求到伺服器
+                    const response = await fetch(`/traffic?freeway=${highway}&sectionID=${section}`);
+                    const data = await response.json();
+        
+                    // 更新 UI
+                    document.getElementById('travel-speed').textContent = data.travelSpeed || 'N/A';
+                    document.getElementById('travel-time').textContent = data.travelTime || 'N/A';
+                } catch (error) {
+                    console.error('Error fetching traffic data:', error);
+                }
+            }
+        </script>
+        
 
 </body></html>
