@@ -18,7 +18,7 @@ client.on('connect', () => {
 
   // 發布訊息到主題
   const topic = 'test/topic';
-  const message = 'Hello from sender!';
+  const message = '打開電子學課本第幾頁';
   client.publish(topic, message, (err) => {
     if (err) {
       console.error('Failed to publish message:', err);

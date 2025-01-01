@@ -4,8 +4,6 @@ const session = require('express-session');
 const sqlite3 = require('sqlite3');
 const bcrypt = require('bcrypt');
 const mqtt = require('mqtt');
-const axios = require('axios');
-const qs = require('qs'); // 用來處理 URL 編碼的請求體
 
 // MQTT 設定
 const options = {
@@ -67,29 +65,14 @@ function authMiddleware(req, res, next) {
     `);
 }
 
-// OIDC 身份驗證資訊
-const clientId = 'jack306-03f62b49-6317-490c';
-const clientSecret = '91529fc7-3196-4199-8ef5-d6419df76c47';
-const tokenUrl = 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token';
-
-// 獲取 access token 的函式
-async function getAccessToken() {
-    const data = qs.stringify({
-        'grant_type': 'client_credentials',
-        'client_id': clientId,
-        'client_secret': clientSecret,
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.send('登出時發生錯誤');
+        }
+        res.redirect('/');
     });
-
-    try {
-        const response = await axios.post(tokenUrl, data, {
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        });
-        return response.data.access_token;
-    } catch (error) {
-        console.error('Error fetching access token:', error);
-        throw error;
-    }
-}
+});
 
 // 登入路由
 app.post('/login', (req, res) => {
@@ -144,36 +127,23 @@ app.post('/login', (req, res) => {
     });
 });
 
-// 即時交通資訊路由
-app.get('/traffic', authMiddleware, async (req, res) => {
-    const freewayName = req.query.freeway || '';
-    const sectionID = req.query.sectionID || '';
+app.post('/send-mqtt', authMiddleware, (req, res) => {
+    const { direction } = req.body;
 
-    try {
-        // 先獲取 access token
-        const accessToken = await getAccessToken();
-
-        // 使用獲得的 access token 調用 TDX API
-        const response = await axios.get(
-            `https://traffic.transportdata.tw/MOTC/v2/Road/Traffic/Live/Freeway/${sectionID}?$top=30&$format=JSON`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`, // 用 Bearer token 進行授權
-                },
-            }
-        );
-
-        const trafficData = response.data.LiveTraffics[0];
-        const travelSpeed = trafficData?.TravelSpeed || '無法獲取';
-        const travelTime = trafficData?.TravelTime || '無法獲取';
-
-        res.json({ travelSpeed, travelTime });
-    } catch (error) {
-        console.error('交通資訊請求錯誤:', error);
-        res.json({ travelSpeed: '查詢失敗', travelTime: '查詢失敗' });
+    if (!direction) {
+        return res.status(400).json({ success: false, error: '未提供方向' });
     }
-});
 
+    const topic = 'tofu/roud';
+    mqttClient.publish(topic, direction, (err) => {
+        if (err) {
+            console.error('MQTT publish error:', err);
+            return res.status(500).json({ success: false, error: '無法發佈訊息到 MQTT 主題' });
+        }
+        console.log(`send Message to: ${topic}: ${direction}`);
+        res.json({ success: true });
+    });
+});
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
