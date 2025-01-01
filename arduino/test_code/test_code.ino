@@ -16,20 +16,8 @@ void setup() {
 }
 
 void loop() {   
-  myservo11.write(95);
-  delay(1000);
-  myservo12.write(95);
-  delay(1000);
-  myservo13.write(95);
-  delay(1000);
-  myservo14.write(95);
-  delay(1000);
-  myservo11.write(78);//1 servo
-  delay(1000);
-  myservo12.write(78);//2 servo
-  delay(1000);
-  myservo13.write(74);//3 servo
-  delay(1000);
-  myservo14.write(77);//4 servo
-  delay(1000);
+  myservo11.write(90);
+  myservo12.write(90);
+  myservo13.write(90);
+  myservo14.write(90);
 }
