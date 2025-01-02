@@ -70,76 +70,102 @@
                     </div>
                 </a>
             </div>
-            <!-- 主要內容 -->
-            <div class="ts-container is-very-narrow has-top-spaced">
-                <!-- 標題 -->
-                <h2 class="ts-header is-center-aligned">請選擇塞車路段</h2>
-                <!-- 按鈕群組 -->
-                <div class="button-group " style="display: flex; justify-content: center; gap: 1rem; margin: 20px 0;">
-                    <button class="ts-button is-primary is-large" data-direction="north">北上</button>
-                    <button class="ts-button is-primary is-large" data-direction="middle">置中</button>
-                    <button class="ts-button is-primary is-large" data-direction="south">南下</button>
-                    <button class="ts-button is-negative is-large" data-direction="warning-north">北上緊急車道</button>
-                    <button class="ts-button is-negative is-large" data-direction="warning-south">南下緊急車道</button>
-                </div>
-        
-                <!-- 送出按鈕 -->
-                <div class="ts-center">
-                    <button id="submitButton" class="ts-button is-secondary is-large">
-                        送出
-                    </button>
-                </div>
+
+        <!-- 主要內容 -->
+        <div class="ts-container is-very-narrow has-top-spaced">
+            <!-- 標題 -->
+            <h2 class="ts-header is-center-aligned">請選擇塞車路段</h2>
+
+            <!-- 按鈕群組 -->
+            <div class="ts-button-group is-centered">
+                <button class="ts-button is-primary is-large" data-direction="north">北上</button>
+                <button class="ts-button is-primary is-large" data-direction="middle">置中</button>
+                <button class="ts-button is-primary is-large" data-direction="south">南下</button>
+                <button class="ts-button is-negative is-large" data-direction="warning-north">北上緊急車道</button>
+                <button class="ts-button is-negative is-large" data-direction="warning-south">南下緊急車道</button>
+            </div>
+            <!-- 送出按鈕 -->
+            <div class="ts-center has-top-spaced">
+                <button id="submitButton" class="ts-button is-secondary is-large">送出</button>
+            </div>
+
+            <!-- 表格 -->
+            <div class="has-top-spaced">
+                <h2 class="ts-header is-center-aligned">訊息記錄</h2>
+                <table class="ts-table is-bordered is-striped">
+                    <thead>
+                        <tr>
+                            <th>時間</th>
+                            <th>使用者</th>
+                            <th>訊息</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordTableBody">
+                        <% logs.forEach(log => { %>
+                            <tr>
+                                <td><%= log.timestamp %></td>
+                                <td><%= log.user %></td>
+                                <td><%= log.message %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    <script>
-        const directionButtons = document.querySelectorAll('.button-group button');
 
-        // 用於存儲選擇的方向
+    <script>
+        const directionButtons = document.querySelectorAll('.ts-button-group button');
         let selectedDirection = '';
 
-        // 為每個方向按鈕添加點擊事件
+        // 按鈕點擊事件
         directionButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // 取得按鈕的 data-direction 屬性值
-                selectedDirection = button.getAttribute('data-direction');
-
-                // 高亮顯示選擇的按鈕，移除其他按鈕的高亮
                 directionButtons.forEach(btn => btn.classList.remove('is-active'));
                 button.classList.add('is-active');
-
-                console.log(`已選擇方向: ${selectedDirection}`);
+                selectedDirection = button.dataset.direction;
             });
         });
 
-        // 送出按鈕的點擊事件
+        // 送出按鈕事件
         const submitButton = document.getElementById('submitButton');
         submitButton.addEventListener('click', async () => {
-            if (selectedDirection) {
-                try {
-                    const response = await fetch('/send-mqtt', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ direction: selectedDirection.toLowerCase() }) // 發送小寫的方向指令
-                    });
-
-                    const result = await response.json();
-                    if (result.success) {
-                        alert(`已成功發送指令：${selectedDirection}`);
-                    } else {
-                        alert(`發送失敗：${result.error}`);
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('發送過程中發生錯誤');
-                }
-            } else {
+            if (!selectedDirection) {
                 alert('請先選擇方向！');
+                return;
+            }
+
+            try {
+                const response = await fetch('/send-mqtt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ direction: selectedDirection.toLowerCase() }),
+                });
+
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(`已成功發送指令：${selectedDirection}`);
+
+                    const tableBody = document.getElementById('recordTableBody');
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td>${new Date().toLocaleString()}</td>
+                        <td>當前使用者</td>
+                        <td>${selectedDirection}</td>
+                    `;
+                    tableBody.prepend(newRow);
+                } else {
+                    alert(`發送失敗：${result.error}`);
+                }
+            } catch (error) {
+                alert('發送過程中發生錯誤');
+                console.error(error);
             }
         });
-
-    </script>   
+    </script>
 </body>
 </html>
