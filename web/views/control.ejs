@@ -1,80 +1,76 @@
 <!DOCTYPE html>
-<!-- saved from url=(0056)https://tocas-ui.com/5.0/zh-tw/examples/dashboard.html#! -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <link rel="stylesheet" href="./資訊儀表板 - Tocas UI_files/tocas.min.css">
-        <link href="./資訊儀表板 - Tocas UI_files/css2" rel="stylesheet">
-        <title>移動式分隔島 - 首頁</title>
-        <!-- 核心：Tocas UI 套件head -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.js"></script>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <!-- 核心：Tocas UI 套件end -->
-    </head>
-    <body>
-        <div class="ts-app-layout is-fullscreen is-horizontal">
-            <div class="cell has-dark" style="width: 240px; color: var(--ts-white)">
-                <div class="ts-content is-center-aligned">
-                    <div class="ts-wrap is-vertical is-compact is-middle-aligned">
-                        <div class="ts-image is-circular">
-                            <img src="https://i.pinimg.com/originals/23/51/bc/2351bc65b2b5d75cef146b7edddf805b.gif" width="80">
-                        </div>
-                        <div class="ts-header"><%= user %></div>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.css">
+    <title>移動式分隔島 - 方向控制</title>
+    <style>
+        .ts-button.is-active {
+            background-color: var(--ts-primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="ts-app-layout is-fullscreen is-horizontal">
+        <!-- 側邊欄 -->
+        <div class="cell has-dark" style="width: 240px;">
+            <div class="ts-content is-center-aligned">
+                <div class="ts-wrap is-vertical is-compact is-middle-aligned">
+                    <div class="ts-image is-circular">
+                        <img src="https://i.pinimg.com/originals/23/51/bc/2351bc65b2b5d75cef146b7edddf805b.gif" width="80">
                     </div>
+                    <div class="ts-header"><%= user %></div>
                 </div>
-                <div class="ts-divider"></div>
-                <div class="ts-content is-dense">
-                    <div class="ts-grid">
-                        <div class="column is-fluid">
-                            <div class="ts-text is-bold">道路控制台</div>
-                        </div>
-                        <div class="column">
-                            <span class="ts-icon is-users-icon"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="ts-menu is-dense is-small" style="opacity: 0.8">
-                    <a href="/main" class="item">系統狀態</a>
-                    <a href="/control" class="item">方向控制</a>
-                    <a href="/admin" class="item">使用者管理</a>
-                </div>
-                <div class="ts-content is-dense">
-                    <div class="ts-grid">
-                        <div class="column is-fluid">
-                            <div class="ts-text is-bold">網站管理</div>
-                        </div>
-                        <div class="column">
-                            <span class="ts-icon is-cogs-icon"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="ts-menu is-dense is-small" style="opacity: 0.8">
-                    <a href="/project" class="item">關於專題</a>
-                    <a href="/about" class="item">關於小隊</a>
-                </div>
-                <div class="ts-divider has-top-spaced-small"></div>
-                <div class="ts-divider"></div>
-                <a href="https://github.com/hongfu553/highway_websystem" class="ts-content is-interactive is-dense">
-                    <div class="ts-grid">
-                        <div class="column is-fluid">
-                            <div class="ts-text is-bold">Github</div>
-                        </div>
-                        <div class="column">
-                            <span class="ts-icon is-github-icon"></span>
-                        </div>
-                    </div>
-                </a>
             </div>
+            <div class="ts-divider"></div>
+            <div class="ts-content is-dense">
+                <div class="ts-grid">
+                    <div class="column is-fluid">
+                        <div class="ts-text is-bold">道路控制台</div>
+                    </div>
+                    <div class="column">
+                        <span class="ts-icon is-users-icon"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="ts-menu is-dense is-small">
+                <a href="/main" class="item">系統狀態</a>
+                <a href="/control" class="item">方向控制</a>
+                <a href="/admin" class="item">使用者管理</a>
+            </div>
+            <div class="ts-content is-dense">
+                <div class="ts-grid">
+                    <div class="column is-fluid">
+                        <div class="ts-text is-bold">網站管理</div>
+                    </div>
+                    <div class="column">
+                        <span class="ts-icon is-cogs-icon"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="ts-menu is-dense is-small" style="opacity: 0.8">
+                <a href="/project" class="item">關於專題</a>
+                <a href="/about" class="item">關於小隊</a>
+            </div>
+            <a href="https://github.com/hongfu553/highway-websystem" class="ts-content is-interactive is-dense">
+                <div class="ts-grid">
+                    <div class="column is-fluid">
+                        <div class="ts-text is-bold">Github</div>
+                    </div>
+                    <div class="column">
+                        <span class="ts-icon is-github-icon"></span>
+                    </div>
+                </div>
+            </a>
+        </div>
         
 
         <!-- 主要內容 -->
         <div class="ts-container is-very-narrow has-top-spaced">
             <!-- 標題 -->
-            <h3 class="ts-header is-center-aligned">請選擇塞車路段</h3>
+            <h3 class="ts-header is-center-aligned">請選擇塞車路段</h>
 
             <!-- 按鈕群組 -->
             <div class="ts-button-group is-centered">
