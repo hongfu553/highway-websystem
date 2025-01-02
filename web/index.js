@@ -45,6 +45,22 @@ const db = new sqlite3.Database('highway.db', (err) => {
     }
 });
 
+db.run(`
+    CREATE TABLE IF NOT EXISTS mqtt_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user TEXT NOT NULL,
+        message TEXT NOT NULL,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+`, (err) => {
+    if (err) {
+        console.error('Failed to create mqtt_logs table:', err);
+    } else {
+        console.log('mqtt_logs table ready');
+    }
+});
+
+
 // 驗證登入狀態中間件
 function authMiddleware(req, res, next) {
     if (req.session.user) {
@@ -140,10 +156,21 @@ app.post('/send-mqtt', authMiddleware, (req, res) => {
             console.error('MQTT publish error:', err);
             return res.status(500).json({ success: false, error: '無法發佈訊息到 MQTT 主題' });
         }
-        console.log(`send Message to: ${topic}: ${direction}`);
-        res.json({ success: true });
+
+        // 插入資料庫
+        const query = `INSERT INTO mqtt_logs (user, message) VALUES (?, ?)`;
+        db.run(query, [req.session.user, direction], (err) => {
+            if (err) {
+                console.error('Failed to log MQTT message:', err);
+                return res.status(500).json({ success: false, error: '無法記錄訊息' });
+            }
+
+            console.log(`Logged message: ${direction} by user: ${req.session.user}`);
+            res.json({ success: true });
+        });
     });
 });
+
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -153,7 +180,18 @@ app.get('/', (req, res) => res.render('login'));
 app.get('/reg', (req, res) => res.render('register'));
 app.get('/main', authMiddleware, (req, res) => res.render('index', { user: req.session.user }));
 app.get('/about', authMiddleware, (req, res) => res.render('about', { user: req.session.user }));
-app.get('/control', authMiddleware, (req, res) => res.render('control', { user: req.session.user }));
+app.get('/control', authMiddleware, (req, res) => {
+    const query = `SELECT * FROM mqtt_logs ORDER BY timestamp DESC`;
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error('Failed to fetch MQTT logs:', err);
+            return res.status(500).send('無法獲取記錄');
+        }
+        res.render('control', { user: req.session.user, logs: rows });
+    });
+});
+
+
 app.get('/project', authMiddleware, (req, res) => res.render('project', { user: req.session.user }));
 app.get('/admin', authMiddleware, (req, res) => res.send('頁面製作中...'));
 
