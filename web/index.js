@@ -7,7 +7,7 @@ const mqtt = require('mqtt');
 
 // MQTT 設定
 const options = {
-    host: 'pc756323.ala.asia-southeast1.emqxsl.com',
+    host: 'c756323.ala.asia-southeast1.emqxsl.com',
     port: 8883, // TLS 使用的默認端口
     protocol: 'mqtts', // 使用加密的 MQTT 協議
     username: 'hongfu553', // 替換為你的 HiveMQ Cloud 帳戶使用者名稱
