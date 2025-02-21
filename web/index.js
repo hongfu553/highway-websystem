@@ -4,14 +4,15 @@ const session = require('express-session');
 const sqlite3 = require('sqlite3');
 const bcrypt = require('bcrypt');
 const mqtt = require('mqtt');
+require('dotenv').config();
 
 // MQTT 設定
 const options = {
-    host: 'c756323.ala.asia-southeast1.emqxsl.com',
+    host: process.env.MQTT_HOST,
     port: 8883, // TLS 使用的默認端口
     protocol: 'mqtts', // 使用加密的 MQTT 協議
-    username: 'hongfu553', // 替換為你的 HiveMQ Cloud 帳戶使用者名稱
-    password: 'F132369445', // 替換為你的 HiveMQ Cloud 帳戶密碼
+    username: process.env.MQTT_USERNAME, // 替換為你的 HiveMQ Cloud 帳戶使用者名稱
+    password: process.env.MQTT_PASSWORD, // 替換為你的 HiveMQ Cloud 帳戶密碼
 };
 
 const mqttClient = mqtt.connect(options);
