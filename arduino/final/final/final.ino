@@ -2,27 +2,26 @@
 #include "WiFiSSLClient.h"   // SSL 客戶端庫
 #include <PubSubClient.h>    // MQTT 客戶端庫
 #include <Servo.h> //伺服馬達
+#include <secrets.h> //WiFi庫
 Servo myservo_A[4];
 Servo myservo_B[4];
 Servo myservo_C[2];
 int a;
 int A_off[4]={95, 95, 95, 95};
-int A_on[4]={78, 75, 80, 73}, B_on[4]={68, 45, 78, 64}, C_on[4]={135, 118, 117, 110};
+int A_on[4]={76, 75, 78, 73}, B_on[4]={68, 45, 78, 64}, C_on[4]={135, 118, 120, 110};
 int BC_O[4]={85,90,100,90};
 int BC_off[2]={80,100},BC_on[2]={97,83};
 float location_A[4]={90,90,90,90}, location_B[4]={90,90,90,90},location_C[2]={90,90}; // 使用浮點數來記錄位置
 float speed = 1; // 控制速度，數值越小越慢，建議1~10之間
 
-// WiFi 設定
-const char* ssid = "CS_Class";   // 輸入你的 WiFi 名稱
-const char* password = "26430686"; // WiFi 密碼
+const char* ssid = SECRET_WIFI_SSID;
+const char* password = SECRET_WIFI_PASSWORD;
 
-// MQTT 設定
-const char* mqtt_server = "pc756323.ala.asia-southeast1.emqxsl.com"; // MQTT 伺服器
-const int mqtt_port = 8883;                  // 使用 SSL 的 MQTT 埠
-const char* mqtt_user = "hongfu553";         // MQTT 使用者名稱
-const char* mqtt_password = "F132369445";    // MQTT 密碼
-const char* mqtt_topic = "tofu/roud";       // 自訂的 MQTT 主題
+const char* mqtt_server = SECRET_MQTT_SERVER;
+const int mqtt_port = SECRET_MQTT_PORT;
+const char* mqtt_user = SECRET_MQTT_USER;
+const char* mqtt_password = SECRET_MQTT_PASSWORD;
+const char* mqtt_topic = SECRET_MQTT_TOPIC;
 
 // WiFi 和 MQTT 客戶端
 WiFiSSLClient sslClient;                     // SSL 客戶端
