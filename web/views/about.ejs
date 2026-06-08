@@ -13,61 +13,8 @@
 </head>
 <body>
     <div class="ts-app-layout is-fullscreen is-horizontal">
-        <!-- 側邊欄 -->
-        <div class="cell has-dark" style="width: 240px; color: var(--ts-white);">
-            <div class="ts-content is-center-aligned has-top-spaced">
-                <div class="ts-wrap is-vertical is-compact is-middle-aligned">
-                    <div class="ts-image is-circular">
-                        <img src="https://i.pinimg.com/originals/23/51/bc/2351bc65b2b5d75cef146b7edddf805b.gif" width="80">
-                    </div>
-                    <div class="ts-header"><%= user %></div>
-                </div>
-            </div>
-            <div class="ts-divider"></div>
-            <!-- 功能區塊 -->
-            <div class="ts-content is-dense">
-                <div class="ts-grid">
-                    <div class="column is-fluid">
-                        <div class="ts-text is-bold">道路控制台</div>
-                    </div>
-                    <div class="column">
-                        <span class="ts-icon is-users-icon"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="ts-menu is-dense is-small" style="opacity: 0.9;">
-                <a href="/main" class="item">系統狀態</a>
-                <a href="/control" class="item">方向控制</a>
-                <a href="/admin" class="item">使用者管理</a>
-            </div>
-            <div class="ts-divider has-top-spaced-small"></div>
-            <!-- 其他功能 -->
-            <div class="ts-content is-dense">
-                <div class="ts-grid">
-                    <div class="column is-fluid">
-                        <div class="ts-text is-bold">網站管理</div>
-                    </div>
-                    <div class="column">
-                        <span class="ts-icon is-cogs-icon"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="ts-menu is-dense is-small" style="opacity: 0.9;">
-                <a href="/project" class="item">關於專題</a>
-                <a href="/about" class="item">關於小隊</a>
-            </div>
-            <div class="ts-divider has-top-spaced-small"></div>
-            <a href="https://github.com/hongfu553/highway-websystem" class="ts-content is-interactive is-dense">
-                <div class="ts-grid">
-                    <div class="column is-fluid">
-                        <div class="ts-text is-bold">Github</div>
-                    </div>
-                    <div class="column">
-                        <span class="ts-icon is-github-icon"></span>
-                    </div>
-                </div>
-            </a>
-        </div>
+        <%- include('partials/sidebar', { user: user, active: 'about' }) %>
+
         <!-- 主內容區 -->
         <div class="ts-container has-top-spaced">
             <div class="ts-card">

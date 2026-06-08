@@ -1,182 +1,81 @@
 <!DOCTYPE html>
-<!-- saved from url=(0056)https://tocas-ui.com/5.0/zh-tw/examples/dashboard.html#! -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <link rel="stylesheet" href="./資訊儀表板 - Tocas UI_files/tocas.min.css">
-        <link href="./資訊儀表板 - Tocas UI_files/css2" rel="stylesheet">
-        <title>移動式分隔島 - 首頁</title>
-        <!-- 核心：Tocas UI 套件head -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.js"></script>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <!-- 核心：Tocas UI 套件end -->
-    </head>
-    <body>
-        <div class="ts-app-layout is-fullscreen is-horizontal">
-            <div class="cell has-dark" style="width: 240px; color: var(--ts-white)">
-                <div class="ts-content is-center-aligned">
-                    <div class="ts-wrap is-vertical is-compact is-middle-aligned">
-                        <div class="ts-image is-circular">
-                            <img src="https://i.pinimg.com/originals/23/51/bc/2351bc65b2b5d75cef146b7edddf805b.gif" width="80">
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>移動式分隔島 - 首頁</title>
+    <!-- Tocas UI 套件 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/5.0.1/tocas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div class="ts-app-layout is-fullscreen is-horizontal">
+        <%- include('partials/sidebar', { user: user, active: 'main' }) %>
+
+        <div class="ts-container is-narrow has-vertically-padded-large">
+            <div class="ts-header is-large is-heavy">儀表板</div>
+            <div class="ts-text is-secondary">檢視系統狀態。</div>
+            <div class="ts-grid is-relaxed is-3-columns has-top-spaced-large">
+                <div class="column">
+                    <div class="ts-box">
+                        <div class="ts-content">
+                            <div class="ts-statistic">
+                                <div class="value">96.63 km/h</div>
+                            </div>
+                            高速公路最高車速
                         </div>
-                        <div class="ts-header"><%= user %></div>
-                    </div>
-                </div>
-                <div class="ts-divider"></div>
-                <div class="ts-content is-dense">
-                    <div class="ts-grid">
-                        <div class="column is-fluid">
-                            <div class="ts-text is-bold">道路控制台</div>
-                        </div>
-                        <div class="column">
-                            <span class="ts-icon is-users-icon"></span>
+                        <div class="symbol">
+                            <span class="ts-icon is-wheelchair-move-icon"></span>
                         </div>
                     </div>
                 </div>
-                <div class="ts-menu is-dense is-small" style="opacity: 0.8">
-                    <a href="/main" class="item">系統狀態</a>
-                    <a href="/control" class="item">方向控制</a>
-                    <a href="/admin" class="item">使用者管理</a>
-                </div>
-                <div class="ts-content is-dense">
-                    <div class="ts-grid">
-                        <div class="column is-fluid">
-                            <div class="ts-text is-bold">網站管理</div>
+                <div class="column">
+                    <div class="ts-box">
+                        <div class="ts-content">
+                            <div class="ts-statistic">
+                                <div class="value">2</div>
+                            </div>
+                            今日車禍數
                         </div>
-                        <div class="column">
-                            <span class="ts-icon is-cogs-icon"></span>
+                        <div class="symbol">
+                            <span class="ts-icon is-car-burst-icon"></span>
                         </div>
                     </div>
                 </div>
-                <div class="ts-menu is-dense is-small" style="opacity: 0.8">
-                    <a href="/project" class="item">關於專題</a>
-                    <a href="/about" class="item">關於小隊</a>
-                </div>
-                <a href="https://github.com/hongfu553/highway-websystem" class="ts-content is-interactive is-dense">
-                    <div class="ts-grid">
-                        <div class="column is-fluid">
-                            <div class="ts-text is-bold">Github</div>
+                <div class="column">
+                    <div class="ts-box">
+                        <div class="ts-content">
+                            <div class="ts-statistic">
+                                <div class="value">17 km/h</div>
+                            </div>
+                            高速公路最低車速
                         </div>
-                        <div class="column">
-                            <span class="ts-icon is-github-icon"></span>
+                        <div class="symbol">
+                            <span class="ts-icon is-wheelchair-icon"></span>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
-            <div class="cell is-fluid is-scrollable is-secondary">
-                <div class="ts-container is-narrow has-vertically-padded-large">
-                    <div class="ts-header is-large is-heavy">儀表板</div>
-                    <div class="ts-text is-secondary">檢視系統狀態。</div>
-                    <div class="ts-grid is-relaxed is-3-columns has-top-spaced-large">
-                        <div class="column">
-                            <div class="ts-box">
-                                <div class="ts-content">
-                                    <div class="ts-statistic">
-                                        <div class="value">96.63 km/h</div>                                        
-                                    </div>
-                                    高速公路最高車速
-                                </div>
-                                <div class="symbol">
-                                    <span class="ts-icon is-wheelchair-move-icon"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <div class="ts-box">
-                                <div class="ts-content">
-                                    <div class="ts-statistic">
-                                        <div class="value">2</div>                                
-                                    </div>
-                                    今日車禍數
-                                </div>
-                                <div class="symbol">
-                                    <span class="ts-icon is-car-burst-icon"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <div class="ts-box">
-                                <div class="ts-content">
-                                    <div class="ts-statistic">
-                                        <div class="value">17 km/h</div>                                        
-                                    </div>
-                                    高速公路最低車速
-                                </div>
-                                <div class="symbol">
-                                    <span class="ts-icon is-wheelchair-icon"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ts-divider is-section has-top-spaced-large"></div>
-                    <div class="ts-box" style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="ts-header is-heavy">即時交通路況
-                            <div class="ts-text is-secondary"></div>
-                        </div>
-                        <!-- 地圖顯示 -->
-                        <div class="map-container" style="width: 100%; overflow: hidden; border-radius: 8px;">
-                            <iframe id="traffic-map" 
-                                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1938037.8510976478!2d120.29374776101614!3d23.721812774012847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1szh-TW!2stw!4v1732003090233!5m2!1szh-TW!2stw" 
-                                width="100%" 
-                                height="450" 
-                                style="border:0;" 
-                                allowfullscreen="" 
-                                loading="lazy" 
-                                referrerpolicy="no-referrer-when-downgrade">
-                            </iframe>
-                        </div>
-                    
-                        <!-- 選擇高速公路和路段 -->
-                        <div class="ts-form has-top-spaced-large">
-                            <div class="ts-field">
-                                <label for="highway-select">選擇高速公路</label>
-                                <select id="highway-select" class="ts-select">
-                                    <option value="1">國道一號</option>
-                                    <option value="3">國道三號</option>
-                                    <option value="5">國道五號</option>
-                                </select>
-                            </div>
-                            <div class="ts-field">
-                                <label for="section-select">選擇路段</label>
-                                <select id="section-select" class="ts-select">
-                                    <option value="101">台北 -> 桃園</option>
-                                    <option value="102">桃園 -> 新竹</option>
-                                    <option value="103">新竹 -> 苗栗</option>
-                                </select>
-                            </div>
-                            <button class="ts-button is-primary" onclick="fetchTrafficData()">查詢交通資訊</button>
-                        </div>
-                    
-                        <!-- 顯示交通資訊 -->
-                        <div id="traffic-info" class="ts-content has-top-spaced-large">
-                            <div class="ts-header is-heavy">交通資訊</div>
-                            <p>平均旅行速度: <span id="travel-speed">N/A</span> km/h</p>
-                            <p>預估旅行時間: <span id="travel-time">N/A</span> 分鐘</p>
-                        </div>
-                    </div>
+            <div class="ts-divider is-section has-top-spaced-large"></div>
+            <div class="ts-box" style="display: flex; flex-direction: column; align-items: center;">
+                <div class="ts-header is-heavy">即時交通路況</div>
+                <!-- 地圖顯示 -->
+                <div class="map-container" style="width: 100%; overflow: hidden; border-radius: 8px;">
+                    <iframe id="traffic-map"
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1938037.8510976478!2d120.29374776101614!3d23.721812774012847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1szh-TW!2stw!4v1732003090233!5m2!1szh-TW!2stw"
+                        width="100%"
+                        height="450"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
             </div>
         </div>
-        <script>
-            async function fetchTrafficData() {
-                const highway = document.getElementById('highway-select').value;
-                const section = document.getElementById('section-select').value;
-        
-                try {
-                    // 發送請求到伺服器
-                    const response = await fetch(`/traffic?freeway=${highway}&sectionID=${section}`);
-                    const data = await response.json();
-        
-                    // 更新 UI
-                    document.getElementById('travel-speed').textContent = data.travelSpeed || 'N/A';
-                    document.getElementById('travel-time').textContent = data.travelTime || 'N/A';
-                } catch (error) {
-                    console.error('Error fetching traffic data:', error);
-                }
-            }
-        </script>
-</body></html>
+    </div>
+</body>
+</html>

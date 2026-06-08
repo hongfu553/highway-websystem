@@ -9,10 +9,10 @@ require('dotenv').config();
 // MQTT 設定
 const options = {
     host: process.env.MQTT_HOST,
-    port: 8883, // TLS 使用的默認端口
-    protocol: 'mqtts', // 使用加密的 MQTT 協議
-    username: process.env.MQTT_USERNAME, // 替換為你的 HiveMQ Cloud 帳戶使用者名稱
-    password: process.env.MQTT_PASSWORD, // 替換為你的 HiveMQ Cloud 帳戶密碼
+    port: 8883,
+    protocol: 'mqtts',
+    username: process.env.MQTT_USERNAME,
+    password: process.env.MQTT_PASSWORD,
 };
 
 const mqttClient = mqtt.connect(options);
@@ -23,13 +23,13 @@ mqttClient.on('error', (err) => console.error('MQTT connection error:', err));
 const app = express();
 const port = 3000;
 
-// Session 中間件設定
+// Session 設定
 app.use(
     session({
-        secret: 'REDACTED_SESSION_SECRET', // 替換為更安全的密鑰
+        secret: process.env.SESSION_SECRET || 'your-secure-secret-key',
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: 60 * 60 * 1000 }, // 1 小時
+        cookie: { maxAge: 60 * 60 * 1000 },
     })
 );
 
@@ -37,12 +37,12 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// 資料庫連線
+// 資料庫設定
 const db = new sqlite3.Database('highway.db', (err) => {
     if (err) {
         console.error('Database error:', err);
     } else {
-        console.log('Database connected');
+        console.log('Connected to database');
     }
 });
 
@@ -56,13 +56,10 @@ db.run(`
 `, (err) => {
     if (err) {
         console.error('Failed to create mqtt_logs table:', err);
-    } else {
-        console.log('mqtt_logs table ready');
     }
 });
 
-
-// 驗證登入狀態中間件+
+// 驗證登入中間件
 function authMiddleware(req, res, next) {
     if (req.session.user) {
         return next();
@@ -89,6 +86,63 @@ app.get('/logout', (req, res) => {
         }
         res.redirect('/');
     });
+});
+
+// 註冊路由
+app.post('/register', async (req, res) => {
+    const { username, password, confirm_password } = req.body;
+
+    if (password !== confirm_password) {
+        return res.send(`
+            <html lang="zh-TW">
+            <head>
+                <meta charset="UTF-8">
+                <title>密碼不匹配</title>
+                <script>
+                    alert('兩次輸入的密碼不一致');
+                    window.location.href = '/reg';
+                </script>
+            </head>
+            </html>
+        `);
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const query = `INSERT INTO users (username, password) VALUES (?, ?)`;
+        db.run(query, [username, hashedPassword], (err) => {
+            if (err) {
+                console.error('Failed to register user:', err);
+                return res.send(`
+                    <html lang="zh-TW">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>註冊失敗</title>
+                        <script>
+                            alert('註冊失敗，請稍後再試');
+                            window.location.href = '/reg';
+                        </script>
+                    </head>
+                    </html>
+                `);
+            }
+            res.send(`
+                <html lang="zh-TW">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>註冊成功</title>
+                    <script>
+                        alert('註冊成功，請登入');
+                        window.location.href = '/';
+                    </script>
+                </head>
+                </html>
+            `);
+        });
+    } catch (err) {
+        console.error('Password hash error:', err);
+        res.send('伺服器內部錯誤');
+    }
 });
 
 // 登入路由
@@ -176,11 +230,11 @@ app.post('/send-mqtt', authMiddleware, (req, res) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// 路由
+// 路由設定
 app.get('/', (req, res) => res.render('login'));
 app.get('/reg', (req, res) => res.render('register'));
-app.get('/main', authMiddleware, (req, res) => res.render('index', { user: req.session.user }));
-app.get('/about', authMiddleware, (req, res) => res.render('about', { user: req.session.user }));
+app.get('/main', authMiddleware, (req, res) => res.render('index', { user: req.session.user, active: 'main' }));
+app.get('/about', authMiddleware, (req, res) => res.render('about', { user: req.session.user, active: 'about' }));
 app.get('/control', authMiddleware, (req, res) => {
     const query = `SELECT * FROM mqtt_logs ORDER BY timestamp DESC`;
     db.all(query, [], (err, rows) => {
@@ -188,12 +242,11 @@ app.get('/control', authMiddleware, (req, res) => {
             console.error('Failed to fetch MQTT logs:', err);
             return res.status(500).send('無法獲取記錄');
         }
-        res.render('control', { user: req.session.user, logs: rows });
+        res.render('control', { user: req.session.user, logs: rows, active: 'control' });
     });
 });
 
-
-app.get('/project', authMiddleware, (req, res) => res.render('project', { user: req.session.user }));
+app.get('/project', authMiddleware, (req, res) => res.render('project', { user: req.session.user, active: 'project' }));
 app.get('/admin', authMiddleware, (req, res) => res.send('頁面製作中...'));
 
 // 啟動伺服器
