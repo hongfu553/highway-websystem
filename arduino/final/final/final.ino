@@ -11,8 +11,6 @@ int A_off[4]={95, 95, 95, 95};
 int A_on[4]={76, 75, 78, 73}, B_on[4]={68, 45, 78, 64}, C_on[4]={135, 118, 120, 110};
 int BC_O[4]={85,90,100,90};
 int BC_off[2]={80,100},BC_on[2]={97,83};
-float location_A[4]={90,90,90,90}, location_B[4]={90,90,90,90},location_C[2]={90,90}; // 使用浮點數來記錄位置
-float speed = 1; // 控制速度，數值越小越慢，建議1~10之間
 
 const char* ssid = SECRET_WIFI_SSID;
 const char* password = SECRET_WIFI_PASSWORD;
